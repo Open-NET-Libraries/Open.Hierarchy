@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".git" />
+    <None Remove=".gitignore" />
+    <None Remove="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Open.Disposable" Version="1.0.4" />
+    <PackageReference Include="Open.Disposable.ObjectPools" Version="1.2.0" />
+  </ItemGroup>
+
+</Project>
