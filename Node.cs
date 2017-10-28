@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
 using Open.Disposable;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Open.Hierarchy
 {
@@ -124,10 +123,15 @@ namespace Open.Hierarchy
 
 		object IHaveRoot.Root => Root;
 
-		internal void Teardown()
+		public void Teardown()
 		{
 			Value = default(T);
 			Detatch(); // If no parent then this does nothing...
+			TeardownChildren();
+		}
+
+		public void TeardownChildren()
+		{
 			foreach (var c in _children)
 			{
 				c._parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
@@ -136,12 +140,21 @@ namespace Open.Hierarchy
 			_children.Clear();
 		}
 
-		internal void Recycle(Factory factory)
+		public void Recycle(Factory factory)
 		{
-			if (factory == null) throw new ArgumentNullException("factory");
+			if (factory == null)
+				throw new ArgumentNullException("factory");
 
 			Value = default(T);
 			Detatch(); // If no parent then this does nothing...
+			RecycleChildren(factory);
+		}
+
+		public void RecycleChildren(Factory factory)
+		{
+			if (factory == null)
+				throw new ArgumentNullException("factory");
+
 			foreach (var c in _children)
 			{
 				c._parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
@@ -149,7 +162,6 @@ namespace Open.Hierarchy
 			}
 			_children.Clear();
 		}
-
 
 		/// <summary>
 		/// Used for mapping a tree of evaluations which do not have access to their parent nodes.
@@ -172,6 +184,13 @@ namespace Open.Hierarchy
 			}
 
 			ConcurrentQueueObjectPool<Node<T>> Pool;
+
+			public Node<T> GetBlankNode()
+			{
+				AssertIsAlive();
+
+				return Pool?.Take();
+			}
 
 			public void Recycle(Node<T> n)
 			{
