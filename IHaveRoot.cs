@@ -1,7 +1,12 @@
 ﻿namespace Open.Hierarchy
 {
-	public interface IHaveRoot<TRoot>
+	public interface IHaveRoot
+	{
+		object Root { get; }
+	}
+
+	public interface IHaveRoot<out TRoot> : IHaveRoot
     {
-		TRoot Root { get; }
+		new TRoot Root { get; }
     }
 }
