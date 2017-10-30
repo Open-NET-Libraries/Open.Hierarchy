@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>electricessence</Authors>
+    <Company>electricessence</Company>
+    <Description>Interfaces and classes helful in managing tree-like data structures. 
+
+Part of the "Open" set of libraries.</Description>
+    <Copyright>https://github.com/electricessence/Open.Hierarchy/blob/master/LICENSE</Copyright>
+    <PackageLicenseUrl>https://github.com/electricessence/Open.Hierarchy/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/electricessence/Open.Hierarchy/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
