@@ -6,7 +6,7 @@
 	}
 
 	public interface IHaveRoot<out TRoot> : IHaveRoot
-    {
+	{
 		new TRoot Root { get; }
-    }
+	}
 }

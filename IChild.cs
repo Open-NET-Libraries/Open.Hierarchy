@@ -8,9 +8,9 @@ namespace Open.Hierarchy
 	}
 
 	public interface IChild<out TParent> : IChild
-    {
+	{
 		new TParent Parent { get; }
-    }
+	}
 
 	public static class ChildExtensions
 	{

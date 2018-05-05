@@ -143,7 +143,7 @@ namespace Open.Hierarchy
 		public void Recycle(Factory factory)
 		{
 			if (factory == null)
-				throw new ArgumentNullException("factory");
+				throw new ArgumentNullException(nameof(factory));
 
 			Value = default(T);
 			Detatch(); // If no parent then this does nothing...
@@ -153,7 +153,7 @@ namespace Open.Hierarchy
 		public void RecycleChildren(Factory factory)
 		{
 			if (factory == null)
-				throw new ArgumentNullException("factory");
+				throw new ArgumentNullException(nameof(factory));
 
 			foreach (var c in _children)
 			{
