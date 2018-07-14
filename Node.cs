@@ -1,27 +1,30 @@
-using Open.Disposable;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
-	public sealed class Node<T> : INode<Node<T>>
+	public sealed partial class Node<T> : INode<Node<T>>
 	{
-		#region IChild<Node<T>> Implementation
-		Node<T> _parent;
-		public Node<T> Parent => _parent;
-		object IChild.Parent => _parent;
-		#endregion
+		public Node<T> Parent { get; private set; }
+		object IChild.Parent => Parent;
 
 		#region IParent<Node<T>> Implementation
-		readonly List<Node<T>> _children;
-		public IReadOnlyList<Node<T>> Children { get; private set; }
+		private readonly List<Node<T>> _children;
+		/// <inheritdoc />
+		public IReadOnlyList<Node<T>> Children { get; }
+		/// <inheritdoc />
 		IReadOnlyList<object> IParent.Children => Children;
 		#endregion
 
+		// ReSharper disable once UnusedAutoPropertyAccessor.Global
+		/// <summary>
+		/// The value for the node to hold on to.
+		/// </summary>
 		public T Value { get; set; }
 
-		Node()
+		private Node()
 		{
 			_children = new List<Node<T>>();
 			Children = _children.AsReadOnly();
@@ -30,90 +33,108 @@ namespace Open.Hierarchy
 		// WARNING: Care must be taken not to have duplicate nodes anywhere in the tree but having duplicate values are allowed.
 
 		#region ICollection<Node<T>> Implementation
+		/// <inheritdoc />
 		public bool IsReadOnly => false;
 
+		/// <inheritdoc />
 		public bool Contains(Node<T> node)
 		{
+			if (node == null) throw new ArgumentNullException(nameof(node));
+			Contract.EndContractBlock();
+
 			return _children.Contains(node);
 		}
 
+		/// <inheritdoc />
 		public bool Remove(Node<T> node)
 		{
-			if (_children.Remove(node))
-			{
-				node._parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
-				return true;
-			}
-			return false;
+			if (node == null) throw new ArgumentNullException(nameof(node));
+			Contract.EndContractBlock();
+
+			if (!_children.Remove(node)) return false;
+			node.Parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
+			return true;
 		}
 
+		/// <inheritdoc />
 		public void Add(Node<T> node)
 		{
-			if (node._parent != null)
+			if (node == null) throw new ArgumentNullException(nameof(node));
+			Contract.EndContractBlock();
+
+			if (node.Parent != null)
 			{
-				if (node._parent == this)
+				if (node.Parent == this)
 					throw new InvalidOperationException("Adding a child node more than once.");
 				throw new InvalidOperationException("Adding a node that belongs to another parent.");
 			}
-			node._parent = this;
+			node.Parent = this;
 			_children.Add(node);
 		}
 
+		/// <inheritdoc />
 		public void Clear()
 		{
 			foreach (var c in _children)
-				c._parent = null;
+				c.Parent = null;
 			_children.Clear();
 		}
 
 
+		/// <inheritdoc />
 		public int Count => _children.Count;
 
+		/// <inheritdoc />
 		public IEnumerator<Node<T>> GetEnumerator()
-		{
-			return _children.GetEnumerator();
-		}
+			=> _children.GetEnumerator();
 
+		/// <inheritdoc />
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+			=> GetEnumerator();
 
+		/// <inheritdoc />
 		public void CopyTo(Node<T>[] array, int arrayIndex)
-		{
-			_children.CopyTo(array, arrayIndex);
-		}
+			=> _children.CopyTo(array, arrayIndex);
 		#endregion
 
+		/// <summary>
+		/// Replaces an existing node within it's tree with another node.
+		/// </summary>
+		/// <param name="node">The node to be replaced.</param>
+		/// <param name="replacement">The node to use as a replacement.</param>
 		public void Replace(Node<T> node, Node<T> replacement)
 		{
-			if (replacement._parent != null)
+			if (node == null) throw new ArgumentNullException(nameof(node));
+			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
+			Contract.EndContractBlock();
+
+			if (replacement.Parent != null)
 				throw new InvalidOperationException("Replacement node belongs to another parent.");
 			var i = _children.IndexOf(node);
 			if (i == -1)
 				throw new InvalidOperationException("Node being replaced does not belong to this parent.");
 			_children[i] = replacement;
-			node._parent = null;
-			replacement._parent = this;
+			node.Parent = null;
+			replacement.Parent = this;
 		}
-
-		public void Detatch()
-		{
-			_parent?.Remove(this);
-			_parent = null;
-		}
-
 
 		/// <summary>
-		/// Finds the root node of this tree.
+		/// Removes this node from its parent if it has one.
 		/// </summary>
+		public void Detatch()
+		{
+			Parent?.Remove(this);
+			Parent = null;
+		}
+
+		/// <inheritdoc />
 		public Node<T> Root
 		{
 			get
 			{
-				Node<T> current = this;
+				var current = this;
 				Node<T> parent;
-				while ((parent = current._parent) != null)
+				while ((parent = current.Parent) != null)
 				{
 					current = parent;
 				}
@@ -123,199 +144,63 @@ namespace Open.Hierarchy
 
 		object IHaveRoot.Root => Root;
 
+		/// <summary>
+		/// Tears down this node and its children.
+		/// </summary>
 		public void Teardown()
 		{
-			Value = default(T);
+			Value = default;
 			Detatch(); // If no parent then this does nothing...
 			TeardownChildren();
 		}
 
+		/// <summary>
+		/// Cleans out all the child nodes and tears them down.
+		/// </summary>
 		public void TeardownChildren()
 		{
 			foreach (var c in _children)
 			{
-				c._parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
+				c.Parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
 				c.Teardown();
 			}
 			_children.Clear();
 		}
 
-		public void Recycle(Factory factory)
+		/// <summary>
+		/// Recycles this node.
+		/// </summary>
+		/// <param name="factory">The factory to use as a recycler.</param>
+		// ReSharper disable once UnusedMethodReturnValue.Global
+		public T Recycle(Factory factory)
 		{
 			if (factory == null)
 				throw new ArgumentNullException(nameof(factory));
+			Contract.EndContractBlock();
 
-			Value = default(T);
+			var value = Value;
+			Value = default;
 			Detatch(); // If no parent then this does nothing...
 			RecycleChildren(factory);
+			return value;
 		}
 
+		/// <summary>
+		/// Recycles all the children of this node.
+		/// </summary>
+		/// <param name="factory">The factory to use as a recycler.</param>
 		public void RecycleChildren(Factory factory)
 		{
 			if (factory == null)
 				throw new ArgumentNullException(nameof(factory));
+			Contract.EndContractBlock();
 
 			foreach (var c in _children)
 			{
-				c._parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
+				c.Parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
 				factory.RecycleInternal(c);
 			}
 			_children.Clear();
-		}
-
-		/// <summary>
-		/// Used for mapping a tree of evaluations which do not have access to their parent nodes.
-		/// </summary>
-		public class Factory : DisposableBase
-		{
-			#region Creation, Recycling, and Disposal
-			public Factory()
-			{
-				Pool = new ConcurrentQueueObjectPool<Node<T>>(
-					() => new Node<T>(), PrepareForPool, ushort.MaxValue);
-			}
-
-			protected override void OnDispose(bool calledExplicitly)
-			{
-				if (calledExplicitly)
-				{
-					DisposeOf(ref Pool);
-				}
-			}
-
-			ConcurrentQueueObjectPool<Node<T>> Pool;
-
-			public Node<T> GetBlankNode()
-			{
-				AssertIsAlive();
-
-				return Pool?.Take();
-			}
-
-			public void Recycle(Node<T> n)
-			{
-				AssertIsAlive();
-
-				RecycleInternal(n);
-			}
-
-			internal void RecycleInternal(Node<T> n)
-			{
-				var p = Pool;
-				if (p == null) n.Teardown();
-				else p.Give(n);
-			}
-
-			void PrepareForPool(Node<T> n)
-			{
-				n.Recycle(this);
-			}
-			#endregion
-
-			/// <summary>
-			/// Clones a node by recreating the tree and copying the values.
-			/// </summary>
-			/// <param name="target">The node to replicate.</param>
-			/// <param name="newParentForClone">If a parent is specified it will use that node as its parent.  By default it ends up being detatched.</param>
-			/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
-			/// <returns>The copy of the tree/branch.</returns>
-			public Node<T> Clone(
-				Node<T> target,
-				Node<T> newParentForClone = null,
-				Action<Node<T>, Node<T>> onNodeCloned = null)
-			{
-				AssertIsAlive();
-
-				var clone = Pool.Take();
-				clone.Value = target.Value;
-				newParentForClone?.Add(clone);
-
-				foreach (var child in target._children)
-					clone.Add(Clone(child, clone, onNodeCloned));
-
-				onNodeCloned?.Invoke(target, clone);
-
-				return clone;
-			}
-
-
-			/// <summary>
-			/// Clones a node by recreating the tree and copying the values.
-			/// </summary>
-			/// <param name="target">The node to replicate.</param>
-			/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
-			/// <returns>The copy of the tree/branch.</returns>
-			public Node<T> Clone(Node<T> target, Action<Node<T>, Node<T>> onNodeCloned)
-			{
-				return Clone(target, null, onNodeCloned);
-			}
-
-			/// <summary>
-			/// Create's a clone of the entire tree but only returns the clone of this node.
-			/// </summary>
-			/// <returns>A clone of this node as part of a newly cloned tree.</returns>
-			public Node<T> CloneTree(Node<T> target)
-			{
-				Node<T> node = null;
-				Clone(target.Root, (n, clone) =>
-				{
-					if (n == target) node = clone;
-				});
-				return node;
-			}
-
-			/// <summary>
-			/// Generates a full hierarchy if the root is an IParent and uses the root as the value of the hierarchy.
-			/// Essentially building a map of the tree.
-			/// </summary>
-			/// <typeparam name="T">Child type.</typeparam>
-			/// <typeparam name="TRoot">The type of the root.</typeparam>
-			/// <param name="root">The root instance.</param>
-			/// <returns>The full map of the root.</returns>
-			public Node<T> Map<TRoot>(TRoot root)
-				where TRoot : T
-			{
-				AssertIsAlive();
-
-				var current = Pool.Take();
-				current.Value = root;
-
-				if (root is IParent<T> parent)
-				{
-					foreach (var child in parent.Children)
-					{
-						current.Add(Map<T>(child));
-					}
-				}
-
-				return current;
-			}
-
-			/// <summary>
-			/// Generates a full hierarchy if the root is an IParent and uses the root as the value of the hierarchy.
-			/// Essentially building a map of the tree.
-			/// </summary>
-			/// <typeparam name="T">The type of the root.</typeparam>
-			/// <param name="root">The root instance.</param>
-			/// <returns>The full map of the root.</returns>
-			public Node<T> Map(T root)
-			{
-				return Map<T>(root);
-			}
-
-			/// <summary>
-			/// Generates a full hierarchy if the root of the container is an IParent and uses the root as the value of the hierarchy.
-			/// Essentially building a map of the tree.
-			/// </summary>
-			/// <typeparam name="T">The type of the root.</typeparam>
-			/// <param name="container">The container of the root instance.</param>
-			/// <returns>The full map of the root.</returns>
-			public Node<T> Map<TRoot>(IHaveRoot<TRoot> container)
-				where TRoot : T
-			{
-				return Map(container.Root);
-			}
-
 		}
 
 	}
