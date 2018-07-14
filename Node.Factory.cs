@@ -1,5 +1,6 @@
 ﻿using Open.Disposable;
 using System;
+using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
@@ -14,7 +15,7 @@ namespace Open.Hierarchy
 			public Factory()
 			{
 				_pool = new ConcurrentQueueObjectPool<Node<T>>(
-					() => new Node<T>(), PrepareForPool, null, ushort.MaxValue);
+					() => new Node<T>(this), PrepareForPool, null, ushort.MaxValue);
 			}
 
 			protected override void OnDispose(bool calledExplicitly)
@@ -33,21 +34,28 @@ namespace Open.Hierarchy
 			/// <returns>A blank node.</returns>
 			public Node<T> GetBlankNode()
 			{
+				var p = _pool;
 				AssertIsAlive();
 
-				return _pool?.Take();
+				var n = p.Take();
+				n._recycled = false;
+				return n;
 			}
+
 
 			/// <summary>
 			/// Recycles the node into the object pool, returning the value contained.
 			/// </summary>
-			/// <param name="n">The node to be recycled.</param>
+			/// <param name="node">The node to be recycled.</param>
 			/// <returns>The value contained in the node.</returns>
-			public T Recycle(Node<T> n)
+			public T Recycle(Node<T> node)
 			{
-				AssertIsAlive();
+				if (node == null) throw new ArgumentNullException(nameof(node));
+				if (node._factory != this)
+					throw new ArgumentException("The node being provided for recycling does not belong to this factory.", nameof(node));
+				Contract.EndContractBlock();
 
-				return RecycleInternal(n);
+				return RecycleInternal(node);
 			}
 
 			internal T RecycleInternal(Node<T> n)
@@ -59,8 +67,12 @@ namespace Open.Hierarchy
 				return value;
 			}
 
-			void PrepareForPool(Node<T> n)
-				=> n.Recycle(this);
+			static void PrepareForPool(Node<T> n)
+			{
+				n.Recycle();
+				n._recycled = true;
+			}
+
 			#endregion
 
 			/// <summary>
@@ -78,9 +90,16 @@ namespace Open.Hierarchy
 				Node<T> newParentForClone = null,
 				Action<Node<T>, Node<T>> onNodeCloned = null)
 			{
+				if (target == null) throw new ArgumentNullException(nameof(target));
+				if (target._factory != this)
+					throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(target));
+				if (newParentForClone != null && newParentForClone._factory != this)
+					throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(newParentForClone));
+				Contract.EndContractBlock();
+
 				AssertIsAlive();
 
-				var clone = _pool.Take();
+				var clone = GetBlankNode();
 				clone.Value = target.Value;
 				newParentForClone?.Add(clone);
 
@@ -92,7 +111,6 @@ namespace Open.Hierarchy
 				return clone;
 			}
 
-
 			/// <summary>
 			/// Clones a node by recreating the tree and copying the values.
 			/// </summary>
@@ -102,9 +120,7 @@ namespace Open.Hierarchy
 			public Node<T> Clone(
 				Node<T> target,
 				Action<Node<T>, Node<T>> onNodeCloned)
-			{
-				return Clone(target, null, onNodeCloned);
-			}
+				=> Clone(target, null, onNodeCloned);
 
 			/// <summary>
 			/// Create's a clone of the entire tree but only returns the clone of this node.
@@ -132,14 +148,13 @@ namespace Open.Hierarchy
 			{
 				AssertIsAlive();
 
-				var current = _pool.Take();
+				var current = GetBlankNode();
 				current.Value = root;
 
-				if (!(root is IParent<T> parent)) return current;
-				foreach (var child in parent.Children)
-				{
-					current.Add(Map<T>(child));
-				}
+				// Mapping is deferred and occurs on demand.
+				// If values or children change in the node, mapping is disregarded.
+				current._needsMapping = true;
+
 
 				return current;
 			}
@@ -150,10 +165,7 @@ namespace Open.Hierarchy
 			/// </summary>
 			/// <param name="root">The root instance.</param>
 			/// <returns>The full map of the root.</returns>
-			public Node<T> Map(T root)
-			{
-				return Map<T>(root);
-			}
+			public Node<T> Map(T root) => Map<T>(root);
 
 			/// <summary>
 			/// Generates a full hierarchy if the root of the container is an IParent and uses the root as the value of the hierarchy.
@@ -163,10 +175,7 @@ namespace Open.Hierarchy
 			/// <param name="container">The container of the root instance.</param>
 			/// <returns>The full map of the root.</returns>
 			public Node<T> Map<TRoot>(IHaveRoot<TRoot> container)
-				where TRoot : T
-			{
-				return Map(container.Root);
-			}
+				where TRoot : T => Map(container.Root);
 
 		}
 

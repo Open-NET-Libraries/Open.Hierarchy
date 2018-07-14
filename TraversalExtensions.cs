@@ -6,7 +6,7 @@ namespace Open.Hierarchy
 {
 	public static class TraversalExtensions
 	{
-		// NOTE: super recursive, possibly could be better, but this is a unidirectional heirarchy so it's not so easy to avoid recursion.
+		// NOTE: not recursive, but could produce a large stack while traversing, possibly could be better, but this is a unidirectional heirarchy so it's not so easy to avoid recursion.
 
 		/// <summary>
 		/// Returns all descendant nodes.
