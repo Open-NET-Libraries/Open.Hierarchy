@@ -38,35 +38,41 @@ namespace Open.Hierarchy
 			set
 			{
 				AssertNotRecycled();
-				_needsMapping = false;
+				UnMapped = false;
 				_value = value;
 			}
 		}
 
 		private readonly Factory _factory;
-		private bool _needsMapping;
+
+		/// <summary>
+		/// Indicates that this node is in a state of deferred mapping.
+		/// Will be false if not created by calling Factory.Map or if the value has been mapped.
+		/// Since querying the chidren of this node will cause the value to be mapped, it can be useful to query this value before attempting traversal.
+		/// </summary>
+		public bool UnMapped { get; private set; }
 
 		IReadOnlyList<Node<T>> EnsureChildrenMapped()
 		{
-			if (!_needsMapping)
+			if (!UnMapped)
 				return _childrenReadOnly;
 
 			// Need to avoid double mapping and this method is primarily called when 'reading' from the node and contention will only occur if mapping is needed.
 			lock (_children)
 			{
-				if (!_needsMapping) return _childrenReadOnly;
+				if (!UnMapped) return _childrenReadOnly;
 				if (_value is IParent<T> p)
 				{
 					foreach (var child in p.Children)
 						_children.Add(_factory.Map(child));
 				}
-				_needsMapping = false;
+				UnMapped = false;
 			}
 
 			return _childrenReadOnly;
 		}
 
-		internal Node(Factory factory)
+		Node(Factory factory)
 		{
 			_factory = factory ?? throw new ArgumentNullException(nameof(factory));
 			_children = new List<Node<T>>();
@@ -97,7 +103,7 @@ namespace Open.Hierarchy
 			if (!_children.Remove(node)) return false;
 
 			AssertNotRecycled();
-			_needsMapping = false;
+			UnMapped = false;
 			node.Parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
 			return true;
 		}
@@ -127,7 +133,7 @@ namespace Open.Hierarchy
 			if (_children.Count == 0) return;
 
 			AssertNotRecycled();
-			_needsMapping = false;
+			UnMapped = false;
 			foreach (var c in _children)
 				c.Parent = null;
 			_children.Clear();
@@ -171,7 +177,7 @@ namespace Open.Hierarchy
 				throw new InvalidOperationException("Node being replaced does not belong to this parent.");
 
 			AssertNotRecycled();
-			_needsMapping = false;
+			UnMapped = false;
 			_children[i] = replacement;
 			node.Parent = null;
 			replacement.Parent = this;
@@ -209,7 +215,7 @@ namespace Open.Hierarchy
 		/// </summary>
 		public void Teardown()
 		{
-			_needsMapping = false;
+			UnMapped = false;
 			Value = default;
 			Detatch(); // If no parent then this does nothing...
 			TeardownChildren();
@@ -223,7 +229,7 @@ namespace Open.Hierarchy
 			if (_children.Count == 0) return;
 
 			AssertNotRecycled();
-			_needsMapping = false;
+			UnMapped = false;
 			foreach (var c in _children)
 			{
 				c.Parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
@@ -239,7 +245,7 @@ namespace Open.Hierarchy
 		public T Recycle()
 		{
 			AssertNotRecycled(); // Avoid double entry in the pool.
-			_needsMapping = false;
+			UnMapped = false;
 			var value = Value;
 			Value = default;
 			Detatch(); // If no parent then this does nothing...
@@ -254,7 +260,7 @@ namespace Open.Hierarchy
 		{
 			if (_children.Count == 0) return;
 
-			_needsMapping = false;
+			UnMapped = false;
 			foreach (var c in _children)
 			{
 				c.Parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;

@@ -76,67 +76,6 @@ namespace Open.Hierarchy
 			#endregion
 
 			/// <summary>
-			/// Clones a node by recreating the tree and copying the values.
-			/// </summary>
-			/// <param name="target">The node to replicate.</param>
-			/// <param name="newParentForClone">
-			/// If a parent is specified it will use that node as its parent.
-			/// By default it ends up being detatched.
-			/// </param>
-			/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
-			/// <returns>The copy of the tree/branch.</returns>
-			public Node<T> Clone(
-				Node<T> target,
-				Node<T> newParentForClone = null,
-				Action<Node<T>, Node<T>> onNodeCloned = null)
-			{
-				if (target == null) throw new ArgumentNullException(nameof(target));
-				if (target._factory != this)
-					throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(target));
-				if (newParentForClone != null && newParentForClone._factory != this)
-					throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(newParentForClone));
-				Contract.EndContractBlock();
-
-				AssertIsAlive();
-
-				var clone = GetBlankNode();
-				clone.Value = target.Value;
-				newParentForClone?.Add(clone);
-
-				foreach (var child in target._children)
-					clone.Add(Clone(child, clone, onNodeCloned));
-
-				onNodeCloned?.Invoke(target, clone);
-
-				return clone;
-			}
-
-			/// <summary>
-			/// Clones a node by recreating the tree and copying the values.
-			/// </summary>
-			/// <param name="target">The node to replicate.</param>
-			/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
-			/// <returns>The copy of the tree/branch.</returns>
-			public Node<T> Clone(
-				Node<T> target,
-				Action<Node<T>, Node<T>> onNodeCloned)
-				=> Clone(target, null, onNodeCloned);
-
-			/// <summary>
-			/// Create's a clone of the entire tree but only returns the clone of this node.
-			/// </summary>
-			/// <returns>A clone of this node as part of a newly cloned tree.</returns>
-			public Node<T> CloneTree(Node<T> target)
-			{
-				Node<T> node = null;
-				Clone(target.Root, (n, clone) =>
-				{
-					if (n == target) node = clone;
-				});
-				return node;
-			}
-
-			/// <summary>
 			/// Generates a full hierarchy if the root is an IParent and uses the root as the value of the hierarchy.
 			/// Essentially building a map of the tree.
 			/// </summary>
@@ -153,7 +92,7 @@ namespace Open.Hierarchy
 
 				// Mapping is deferred and occurs on demand.
 				// If values or children change in the node, mapping is disregarded.
-				current._needsMapping = true;
+				current.UnMapped = true;
 
 
 				return current;
