@@ -92,7 +92,7 @@ namespace Open.Hierarchy
 
 				// Mapping is deferred and occurs on demand.
 				// If values or children change in the node, mapping is disregarded.
-				current.UnMapped = true;
+				current.Unmapped = true;
 
 
 				return current;

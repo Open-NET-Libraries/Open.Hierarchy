@@ -17,7 +17,7 @@ namespace Open.Hierarchy
 		/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
 		/// <returns>The copy of the tree/branch.</returns>
 		public Node<T> Clone(
-			Node<T> newParentForClone,
+			Node<T> newParentForClone = null,
 			Action<Node<T>, Node<T>> onNodeCloned = null)
 		{
 			if (newParentForClone != null && newParentForClone._factory != _factory)
@@ -33,7 +33,7 @@ namespace Open.Hierarchy
 			foreach (var child in _children)
 				clone.Add(child.Clone(clone, onNodeCloned));
 
-			clone.UnMapped = UnMapped;
+			clone.Unmapped = Unmapped;
 
 			onNodeCloned?.Invoke(this, clone);
 
@@ -54,12 +54,13 @@ namespace Open.Hierarchy
 		/// Create's a clone of the entire tree but only returns the clone of this node.
 		/// </summary>
 		/// <returns>A clone of this node as part of a newly cloned tree.</returns>
-		public Node<T> CloneTree(Node<T> target)
+		public Node<T> CloneTree()
 		{
 			Node<T> node = null;
-			target.Root.Clone((n, clone) =>
+			Root.Clone((original, clone) =>
 			{
-				if (n == target) node = clone;
+				if (original == this)
+					node = clone;
 			});
 			return node;
 		}
