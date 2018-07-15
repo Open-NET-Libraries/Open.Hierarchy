@@ -139,7 +139,6 @@ namespace Open.Hierarchy
 			_children.Clear();
 		}
 
-
 		/// <inheritdoc />
 		public int Count => _children.Count;
 
@@ -158,6 +157,16 @@ namespace Open.Hierarchy
 			_children.CopyTo(array, arrayIndex);
 		}
 		#endregion
+
+		/// <summary>
+		/// Gets a new node with the provided value and adds it as a child.
+		/// </summary>
+		/// <param name="value">The value of the new child.</param>
+		public void AddValue(T value)
+		{
+			AssertNotRecycled();
+			Add(_factory.GetNodeWithValue(value));
+		}
 
 		/// <summary>
 		/// Replaces an existing node within it's tree with another node.

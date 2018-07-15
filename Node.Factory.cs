@@ -42,6 +42,16 @@ namespace Open.Hierarchy
 				return n;
 			}
 
+			/// <summary>
+			/// Gets a blank node.
+			/// </summary>
+			/// <returns>A blank node.</returns>
+			public Node<T> GetNodeWithValue(T value)
+			{
+				var n = GetBlankNode();
+				n.Value = value;
+				return n;
+			}
 
 			/// <summary>
 			/// Recycles the node into the object pool, returning the value contained.
