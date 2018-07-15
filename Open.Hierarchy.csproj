@@ -14,7 +14,7 @@ Part of the "Open" set of libraries.</Description>
     <RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <PackageReleaseNotes>Deferred unidirectional to bidirectional tree mapping.
 Improved assertions and added recycled node validation.
 Simplified factory and recycling usage: nodes now have a referene to their source factory.</PackageReleaseNotes>
