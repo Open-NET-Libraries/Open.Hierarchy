@@ -31,7 +31,7 @@ namespace Open.Hierarchy
 			newParentForClone?.Add(clone);
 
 			foreach (var child in _children)
-				clone.Add(child.Clone(clone, onNodeCloned));
+				child.Clone(clone, onNodeCloned);
 
 			clone.Unmapped = Unmapped;
 

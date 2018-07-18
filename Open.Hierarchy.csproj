@@ -14,8 +14,9 @@ Part of the "Open" set of libraries.</Description>
     <RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
-    <Version>1.4.4</Version>
-    <PackageReleaseNotes>Added useful node creation methods.</PackageReleaseNotes>
+    <Version>1.5.1</Version>
+    <PackageReleaseNotes>Improved API.  Implemented IList&lt;Node&lt;T&gt;&gt; for all nodes.
+Validated mapping optimization.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

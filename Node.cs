@@ -64,7 +64,12 @@ namespace Open.Hierarchy
 				if (_value is IParent<T> p)
 				{
 					foreach (var child in p.Children)
-						_children.Add(_factory.Map(child));
+					{
+						var childNode = _factory.Map(child);
+						childNode.Parent = this;
+						_children.Add(childNode);
+					}
+
 				}
 				Unmapped = false;
 			}
@@ -81,50 +86,98 @@ namespace Open.Hierarchy
 
 		// WARNING: Care must be taken not to have duplicate nodes anywhere in the tree but having duplicate values are allowed.
 
+		#region IList<Node<T>> Implementation
+
+		public int IndexOf(Node<T> child)
+		{
+			EnsureChildrenMapped();
+			return _children.IndexOf(child);
+		}
+
+		void AssertOkToJoinFamily(Node<T> child)
+		{
+			if (child.Parent == null) return;
+			if (child.Parent == this)
+				throw new InvalidOperationException("Provided node already belongs to this parent.");
+			throw new InvalidOperationException("Provided node belongs to another parent.");
+		}
+
+		public void Insert(int index, Node<T> child)
+		{
+			if (child == null) throw new ArgumentNullException(nameof(child));
+			Contract.EndContractBlock();
+
+			AssertNotRecycled();
+			AssertOkToJoinFamily(child);
+
+			EnsureChildrenMapped(); // Adding to potentially existing nodes.
+			child.Parent = this;
+			_children.Add(child);
+		}
+
+		// ReSharper disable once UnusedMethodReturnValue.Global
+		public Node<T> RemoveAt(int index)
+		{
+			if (index < 0 && index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
+			Contract.EndContractBlock();
+
+			AssertNotRecycled();
+			var child = this[index];
+			_children.Remove(child);
+
+			Unmapped = false;
+			child.Parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
+			return child;
+		}
+
+		void IList<Node<T>>.RemoveAt(int index)
+			=> RemoveAt(index);
+
+		public Node<T> this[int index]
+		{
+			get => EnsureChildrenMapped()[index];
+			set => Replace(EnsureChildrenMapped()[index], value);
+		}
+
 		#region ICollection<Node<T>> Implementation
 		/// <inheritdoc />
 		public bool IsReadOnly => false;
 
 		/// <inheritdoc />
-		public bool Contains(Node<T> node)
+		public bool Contains(Node<T> child)
 		{
-			if (node == null) throw new ArgumentNullException(nameof(node));
+			if (child == null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
-			return _children.Contains(node);
+			return _children.Contains(child);
 		}
 
 		/// <inheritdoc />
-		public bool Remove(Node<T> node)
+		public bool Remove(Node<T> child)
 		{
-			if (node == null) throw new ArgumentNullException(nameof(node));
+			if (child == null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
-			if (!_children.Remove(node)) return false;
+			if (!_children.Remove(child)) return false;
 
 			AssertNotRecycled();
 			Unmapped = false;
-			node.Parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
+			child.Parent = null; // Need to be very careful about retaining parent references as it may cause a 'leak' per-se.
 			return true;
 		}
 
 		/// <inheritdoc />
-		public void Add(Node<T> node)
+		public void Add(Node<T> child)
 		{
-			if (node == null) throw new ArgumentNullException(nameof(node));
+			if (child == null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
-			if (node.Parent != null)
-			{
-				if (node.Parent == this)
-					throw new InvalidOperationException("Adding a child node more than once.");
-				throw new InvalidOperationException("Adding a node that belongs to another parent.");
-			}
-
 			AssertNotRecycled();
+			AssertOkToJoinFamily(child);
+
 			EnsureChildrenMapped(); // Adding to potentially existing nodes.
-			node.Parent = this;
-			_children.Add(node);
+			child.Parent = this;
+			_children.Add(child);
 		}
 
 		/// <inheritdoc />
@@ -140,7 +193,7 @@ namespace Open.Hierarchy
 		}
 
 		/// <inheritdoc />
-		public int Count => _children.Count;
+		public int Count => EnsureChildrenMapped().Count;
 
 		/// <inheritdoc />
 		public IEnumerator<Node<T>> GetEnumerator()
@@ -157,15 +210,17 @@ namespace Open.Hierarchy
 			_children.CopyTo(array, arrayIndex);
 		}
 		#endregion
+		#endregion
 
 		/// <summary>
 		/// Gets a new node with the provided value and adds it as a child.
 		/// </summary>
 		/// <param name="value">The value of the new child.</param>
-		public void AddValue(T value)
+		/// <param name="asUnmapped">If true adds the node if it has been prepared for mapping but not yet checked if the value is an IParent.  If value is not an IParent, then this flag does nothing.</param>
+		public void AddValue(T value, bool asUnmapped = false)
 		{
 			AssertNotRecycled();
-			Add(_factory.GetNodeWithValue(value));
+			Add(_factory.GetNodeWithValue(value, asUnmapped));
 		}
 
 		/// <summary>
@@ -277,6 +332,7 @@ namespace Open.Hierarchy
 			}
 			_children.Clear();
 		}
+
 
 	}
 

@@ -46,10 +46,11 @@ namespace Open.Hierarchy
 			/// Gets a blank node.
 			/// </summary>
 			/// <returns>A blank node.</returns>
-			public Node<T> GetNodeWithValue(T value)
+			public Node<T> GetNodeWithValue(T value, bool asUnmapped = false)
 			{
 				var n = GetBlankNode();
 				n.Value = value;
+				n.Unmapped = asUnmapped;
 				return n;
 			}
 
@@ -95,16 +96,12 @@ namespace Open.Hierarchy
 			public Node<T> Map<TRoot>(TRoot root)
 				where TRoot : T
 			{
-				AssertIsAlive();
-
 				var current = GetBlankNode();
 				current.Value = root;
 
 				// Mapping is deferred and occurs on demand.
 				// If values or children change in the node, mapping is disregarded.
 				current.Unmapped = true;
-
-
 				return current;
 			}
 
