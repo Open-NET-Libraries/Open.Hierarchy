@@ -18,12 +18,9 @@ namespace Open.Hierarchy
 					() => new Node<T>(this), PrepareForPool, null, ushort.MaxValue);
 			}
 
-			protected override void OnDispose(bool calledExplicitly)
+			protected override void OnDispose()
 			{
-				if (calledExplicitly)
-				{
-					DisposeOf(ref _pool);
-				}
+				DisposeOf(ref _pool);
 			}
 
 			ConcurrentQueueObjectPool<Node<T>> _pool;
@@ -35,7 +32,7 @@ namespace Open.Hierarchy
 			public Node<T> GetBlankNode()
 			{
 				var p = _pool;
-				AssertIsAlive();
+				this.AssertIsAlive();
 
 				var n = p.Take();
 				n._recycled = false;
