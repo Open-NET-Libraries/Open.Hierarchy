@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
-	public sealed partial class Node<T> : INode<Node<T>>
+	public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 	{
 		public Node<T>? Parent { get; private set; }
 		object? IChild.Parent => Parent;
