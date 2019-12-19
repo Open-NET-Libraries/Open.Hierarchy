@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
 	public sealed partial class Node<T> : INode<Node<T>>
 	{
-		public Node<T> Parent { get; private set; }
-		object IChild.Parent => Parent;
+		public Node<T>? Parent { get; private set; }
+		object? IChild.Parent => Parent;
 
 		#region IParent<Node<T>> Implementation
 		private readonly List<Node<T>> _children;
@@ -20,7 +21,9 @@ namespace Open.Hierarchy
 		IReadOnlyList<object> IParent.Children => EnsureChildrenMapped();
 		#endregion
 
+#pragma warning disable IDE0044 // Add readonly modifier
 		private bool _recycled;
+#pragma warning restore IDE0044 // Add readonly modifier
 		void AssertNotRecycled()
 		{
 			if (_recycled)
@@ -32,6 +35,9 @@ namespace Open.Hierarchy
 		/// The value for the node to hold on to.
 		/// </summary>
 		private T _value;
+#if NETSTANDARD2_1
+		[MaybeNull]
+#endif
 		public T Value
 		{
 			get => _value;
@@ -82,6 +88,7 @@ namespace Open.Hierarchy
 			_factory = factory ?? throw new ArgumentNullException(nameof(factory));
 			_children = new List<Node<T>>();
 			_childrenReadOnly = _children.AsReadOnly();
+			_value = default!;
 		}
 
 		// WARNING: Care must be taken not to have duplicate nodes anywhere in the tree but having duplicate values are allowed.
@@ -263,7 +270,7 @@ namespace Open.Hierarchy
 			get
 			{
 				var current = this;
-				Node<T> parent;
+				Node<T>? parent;
 				while ((parent = current.Parent) != null)
 				{
 					current = parent;
@@ -280,7 +287,7 @@ namespace Open.Hierarchy
 		public void Teardown()
 		{
 			Unmapped = false;
-			Value = default;
+			Value = default!;
 			Detatch(); // If no parent then this does nothing...
 			TeardownChildren();
 		}
@@ -311,7 +318,7 @@ namespace Open.Hierarchy
 			AssertNotRecycled(); // Avoid double entry in the pool.
 			Unmapped = false;
 			var value = Value;
-			Value = default;
+			Value = default!;
 			Detatch(); // If no parent then this does nothing...
 			RecycleChildren();
 			return value;

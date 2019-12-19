@@ -7,15 +7,16 @@ namespace Open.Hierarchy
 		/// <summary>
 		/// The parent of this child.
 		/// </summary>
-		object Parent { get; }
+		object? Parent { get; }
 	}
 
 	public interface IChild<out TParent> : IChild
+		where TParent : class
 	{
 		/// <summary>
 		/// The generic parent of this child.
 		/// </summary>
-		new TParent Parent { get; }
+		new TParent? Parent { get; }
 	}
 
 	public static class ChildExtensions
@@ -28,9 +29,9 @@ namespace Open.Hierarchy
 		/// <returns>An enumerable of the ancestors.</returns>
 		public static IEnumerable<TNode> GetAncestors<TNode>(
 			this TNode node)
-			where TNode : IChild<TNode>
+			where TNode : class, IChild<TNode>
 		{
-			TNode parent;
+			TNode? parent;
 			while ((parent = node.Parent) != null)
 			{
 				yield return parent;
@@ -46,9 +47,9 @@ namespace Open.Hierarchy
 		/// <returns>The root node.</returns>
 		public static TNode GetRoot<TNode>(
 			this TNode node)
-			where TNode : IChild<TNode>
+			where TNode : class, IChild<TNode>
 		{
-			TNode parent;
+			TNode? parent;
 			while ((parent = node.Parent) != null)
 			{
 				node = parent;

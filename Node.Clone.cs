@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
@@ -17,8 +18,8 @@ namespace Open.Hierarchy
 		/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
 		/// <returns>The copy of the tree/branch.</returns>
 		public Node<T> Clone(
-			Node<T> newParentForClone = null,
-			Action<Node<T>, Node<T>> onNodeCloned = null)
+			Node<T>? newParentForClone = null,
+			Action<Node<T>, Node<T>>? onNodeCloned = null)
 		{
 			if (newParentForClone != null && newParentForClone._factory != _factory)
 				throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(newParentForClone));
@@ -56,13 +57,14 @@ namespace Open.Hierarchy
 		/// <returns>A clone of this node as part of a newly cloned tree.</returns>
 		public Node<T> CloneTree()
 		{
-			Node<T> node = null;
+			Node<T>? node = null;
 			Root.Clone((original, clone) =>
 			{
 				if (original == this)
 					node = clone;
 			});
-			return node;
+			Debug.Assert(node != null);
+			return node!;
 		}
 
 	}

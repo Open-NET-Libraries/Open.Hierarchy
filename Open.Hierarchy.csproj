@@ -1,40 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>electricessence</Authors>
-    <Company>electricessence</Company>
-    <Description>Interfaces and classes helful in managing tree-like data structures. 
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>electricessence</Authors>
+		<Company>electricessence</Company>
+		<Description>
+			Interfaces and classes helful in managing tree-like data structures.
 
-Part of the "Open" set of libraries.</Description>
-    <Copyright>https://github.com/electricessence/Open.Hierarchy/blob/master/LICENSE</Copyright>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/electricessence/Open.Hierarchy/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
-    <Version>1.6.2</Version>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+			Part of the "Open" set of libraries.
+		</Description>
+		<Copyright>https://github.com/electricessence/Open.Hierarchy/blob/master/LICENSE</Copyright>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/electricessence/Open.Hierarchy/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
+		<Version>1.7.0</Version>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove=".git" />
-    <None Remove=".gitignore" />
-    <None Remove="LICENSE" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove=".git" />
+		<None Remove=".gitignore" />
+		<None Remove="LICENSE" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Open.Disposable.ObjectPools" Version="2.3.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.4.0" />
+	</ItemGroup>
 
 </Project>
