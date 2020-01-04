@@ -1,5 +1,4 @@
-﻿using System;
-namespace Open.Hierarchy
+﻿namespace Open.Hierarchy
 {
 	public interface IElement<T>
 	{

@@ -16,7 +16,7 @@
 		<RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
-		<Version>1.7.0</Version>
+		<Version>1.7.1</Version>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Nullable>enable</Nullable>
@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.4.0" />
+		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.4.1" />
 	</ItemGroup>
 
 </Project>
