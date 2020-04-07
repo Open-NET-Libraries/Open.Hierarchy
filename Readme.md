@@ -1,5 +1,7 @@
 # Open.Hierarchy
 
+[![NuGet](http://img.shields.io/nuget/v/Open.Hierarchy.svg)](https://www.nuget.org/packages/Open.Hierarchy/)
+
 ## `Node<T>`
 
 One of the important abilities of `Node<T>` and its supporting classes is to allow for creating and modifying tree structures that only have a parent to child relationship.  It's important to ensure that a node cannot occur multiple times in a tree but an instance of its value can occur any number of times. This facilitates potential 'value sub-trees' that can have duplicate references but not duplicate instances.  By using `Node<T>` as a container, a single instance can exist multiple times in a tree but still be uniquely identifiable by its position.
