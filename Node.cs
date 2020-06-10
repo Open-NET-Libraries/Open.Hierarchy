@@ -30,13 +30,16 @@ namespace Open.Hierarchy
 				throw new InvalidOperationException("Attempting to modify a node that has been recyled.");
 		}
 
-		// ReSharper disable once UnusedAutoPropertyAccessor.Global
+#if NETSTANDARD2_1
+		[AllowNull]
+#endif
+		private T _value;
+
 		/// <summary>
 		/// The value for the node to hold on to.
 		/// </summary>
-		private T _value;
 #if NETSTANDARD2_1
-		[MaybeNull]
+		[AllowNull]
 #endif
 		public T Value
 		{
@@ -312,6 +315,9 @@ namespace Open.Hierarchy
 		/// <summary>
 		/// Recycles this node.
 		/// </summary>
+#if NETSTANDARD2_1
+		[return: MaybeNull]
+#endif
 		// ReSharper disable once UnusedMethodReturnValue.Global
 		public T Recycle()
 		{

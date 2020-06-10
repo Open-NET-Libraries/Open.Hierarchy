@@ -1,5 +1,6 @@
 ﻿using Open.Disposable;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
@@ -56,6 +57,9 @@ namespace Open.Hierarchy
 			/// </summary>
 			/// <param name="node">The node to be recycled.</param>
 			/// <returns>The value contained in the node.</returns>
+#if NETSTANDARD2_1
+			[return: MaybeNull]
+#endif
 			public T Recycle(Node<T> node)
 			{
 				if (node == null) throw new ArgumentNullException(nameof(node));
@@ -66,6 +70,9 @@ namespace Open.Hierarchy
 				return RecycleInternal(node);
 			}
 
+#if NETSTANDARD2_1
+			[return: MaybeNull]
+#endif
 			internal T RecycleInternal(Node<T> n)
 			{
 				var value = n.Value;
