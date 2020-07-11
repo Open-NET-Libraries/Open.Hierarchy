@@ -2,34 +2,31 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>electricessence</Authors>
-		<Company>electricessence</Company>
-		<Description>
-			Interfaces and classes helful in managing tree-like data structures.
+		<Description>Interfaces and classes helful in managing tree-like data structures.
 
-			Part of the "Open" set of libraries.
-		</Description>
-		<Copyright>https://github.com/electricessence/Open.Hierarchy/blob/master/LICENSE</Copyright>
-		<PackageLicenseUrl></PackageLicenseUrl>
-		<PackageProjectUrl>https://github.com/electricessence/Open.Hierarchy/</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/electricessence/Open.Hierarchy/</RepositoryUrl>
+Part of the "Open" set of libraries.
+</Description>
+		<Copyright>https://github.com/Open-NET-Libraries/Open.Hierarchy/blob/master/LICENSE</Copyright>
+		<PackageProjectUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>dotnet, dotnetcore, cs, tree, node, hierarchy, parent, child, root</PackageTags>
-		<Version>1.7.2</Version>
+		<Version>1.7.3</Version>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Nullable>enable</Nullable>
-	
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
+    <PackageIcon>logo.png</PackageIcon>
+	</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
-
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<LangVersion>latest</LangVersion>
@@ -40,13 +37,27 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove=".editorconfig" />
 		<None Remove=".git" />
 		<None Remove=".gitignore" />
 		<None Remove="LICENSE" />
+		<None Remove="Readme.md" />
+		<None Include="logo.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Include=".editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.4.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

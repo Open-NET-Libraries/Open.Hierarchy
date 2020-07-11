@@ -62,7 +62,7 @@ namespace Open.Hierarchy
 #endif
 			public T Recycle(Node<T> node)
 			{
-				if (node == null) throw new ArgumentNullException(nameof(node));
+				if (node is null) throw new ArgumentNullException(nameof(node));
 				if (node._factory != this)
 					throw new ArgumentException("The node being provided for recycling does not belong to this factory.", nameof(node));
 				Contract.EndContractBlock();
@@ -77,7 +77,7 @@ namespace Open.Hierarchy
 			{
 				var value = n.Value;
 				var p = _pool;
-				if (p == null) n.Teardown();
+				if (p is null) n.Teardown();
 				else p.Give(n);
 				return value;
 			}
@@ -100,6 +100,7 @@ namespace Open.Hierarchy
 			public Node<T> Map<TRoot>(TRoot root)
 				where TRoot : T
 			{
+				if (root is null) throw new ArgumentNullException(nameof(root));
 				var current = GetBlankNode();
 				current.Value = root;
 
@@ -125,8 +126,11 @@ namespace Open.Hierarchy
 			/// <param name="container">The container of the root instance.</param>
 			/// <returns>The full map of the root.</returns>
 			public Node<T> Map<TRoot>(IHaveRoot<TRoot> container)
-				where TRoot : T => Map(container.Root);
-
+				where TRoot : T
+			{
+				if (container is null) throw new ArgumentNullException(nameof(container));
+				return Map(container.Root);
+			}
 		}
 
 	}

@@ -106,7 +106,7 @@ namespace Open.Hierarchy
 
 		void AssertOkToJoinFamily(Node<T> child)
 		{
-			if (child.Parent == null) return;
+			if (child.Parent is null) return;
 			if (child.Parent == this)
 				throw new InvalidOperationException("Provided node already belongs to this parent.");
 			throw new InvalidOperationException("Provided node belongs to another parent.");
@@ -114,7 +114,7 @@ namespace Open.Hierarchy
 
 		public void Insert(int index, Node<T> child)
 		{
-			if (child == null) throw new ArgumentNullException(nameof(child));
+			if (child is null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
 			AssertNotRecycled();
@@ -156,7 +156,7 @@ namespace Open.Hierarchy
 		/// <inheritdoc />
 		public bool Contains(Node<T> child)
 		{
-			if (child == null) throw new ArgumentNullException(nameof(child));
+			if (child is null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
 			return _children.Contains(child);
@@ -165,7 +165,7 @@ namespace Open.Hierarchy
 		/// <inheritdoc />
 		public bool Remove(Node<T> child)
 		{
-			if (child == null) throw new ArgumentNullException(nameof(child));
+			if (child is null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
 			if (!_children.Remove(child)) return false;
@@ -179,7 +179,7 @@ namespace Open.Hierarchy
 		/// <inheritdoc />
 		public void Add(Node<T> child)
 		{
-			if (child == null) throw new ArgumentNullException(nameof(child));
+			if (child is null) throw new ArgumentNullException(nameof(child));
 			Contract.EndContractBlock();
 
 			AssertNotRecycled();
@@ -240,8 +240,8 @@ namespace Open.Hierarchy
 		/// <param name="replacement">The node to use as a replacement.</param>
 		public void Replace(Node<T> node, Node<T> replacement)
 		{
-			if (node == null) throw new ArgumentNullException(nameof(node));
-			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
+			if (node is null) throw new ArgumentNullException(nameof(node));
+			if (replacement is null) throw new ArgumentNullException(nameof(replacement));
 			Contract.EndContractBlock();
 
 			if (replacement.Parent != null)

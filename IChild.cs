@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
@@ -19,6 +22,7 @@ namespace Open.Hierarchy
 		new TParent? Parent { get; }
 	}
 
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Null check properly implemented.")]
 	public static class ChildExtensions
 	{
 		/// <summary>
@@ -31,6 +35,7 @@ namespace Open.Hierarchy
 			this TNode node)
 			where TNode : class, IChild<TNode>
 		{
+			if (node is null) throw new ArgumentNullException(nameof(node));
 			TNode? parent;
 			while ((parent = node.Parent) != null)
 			{
@@ -38,6 +43,7 @@ namespace Open.Hierarchy
 				node = parent;
 			}
 		}
+
 
 		/// <summary>
 		/// Crawls the ancestor lineage returns the first node with no parent.
@@ -49,6 +55,7 @@ namespace Open.Hierarchy
 			this TNode node)
 			where TNode : class, IChild<TNode>
 		{
+			if (node is null) throw new ArgumentNullException(nameof(node));
 			TNode? parent;
 			while ((parent = node.Parent) != null)
 			{

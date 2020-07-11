@@ -67,6 +67,8 @@ namespace Open.Hierarchy
 		public static IEnumerable<object> GetDescendants(
 			this IParent root, TraversalMode traversal = TraversalMode.BreadthFirst)
 		{
+			if (root is null) throw new ArgumentNullException(nameof(root));
+
 			// Attempt to be more breadth first.
 			switch (traversal)
 			{
