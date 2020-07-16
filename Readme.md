@@ -1,6 +1,5 @@
 # Open.Hierarchy
 
-![.NET Core](https://github.com/Open-NET-Libraries/Open.Hierarchy/workflows/.NET%20Core/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/Open.Hierarchy.svg)](https://www.nuget.org/packages/Open.Hierarchy/)
 
 ## `Node<T>`
