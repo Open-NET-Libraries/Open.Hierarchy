@@ -21,9 +21,8 @@ namespace Open.Hierarchy
 		IReadOnlyList<object> IParent.Children => EnsureChildrenMapped();
 		#endregion
 
-#pragma warning disable IDE0044 // Add readonly modifier
 		private bool _recycled;
-#pragma warning restore IDE0044 // Add readonly modifier
+
 		void AssertNotRecycled()
 		{
 			if (_recycled)

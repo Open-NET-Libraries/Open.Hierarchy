@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy
 {
@@ -22,7 +20,6 @@ namespace Open.Hierarchy
 		new TParent? Parent { get; }
 	}
 
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Null check properly implemented.")]
 	public static class ChildExtensions
 	{
 		/// <summary>

@@ -19,7 +19,7 @@ namespace Open.Hierarchy
 		{
 			foreach (var descendant in root.GetDescendants(traversal))
 			{
-				if (!(descendant is TNode n))
+				if (descendant is not TNode n)
 					throw new InvalidCastException(
 						"Descendant is not of expected generic type and may create inconsistent results.  May need to use non-generic node.GetDescenants method.");
 
