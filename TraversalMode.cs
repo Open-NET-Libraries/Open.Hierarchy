@@ -1,8 +1,7 @@
-﻿namespace Open.Hierarchy
+﻿namespace Open.Hierarchy;
+
+public enum TraversalMode
 {
-	public enum TraversalMode
-	{
-		DepthFirst,
-		BreadthFirst
-	}
+	DepthFirst,
+	BreadthFirst
 }
