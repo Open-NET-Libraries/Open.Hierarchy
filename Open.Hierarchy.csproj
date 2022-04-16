@@ -7,27 +7,27 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>electricessence</Authors>
-		<Description>
-			Interfaces and classes helful in managing tree-like data structures.
+		<Description>Interfaces and classes helful in managing tree-like data structures.
 
-			Part of the "Open" set of libraries.
-		</Description>
+Part of the "Open" set of libraries.</Description>
 		<PackageTags>tree;node;hierarchy;parent;child;root</PackageTags>
 		<Copyright>© electricessence (Oren F.) All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>1.8.3</Version>
+		<Version>1.9.0</Version>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageIcon>logo.png</PackageIcon>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -41,7 +41,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.6.1" />
+		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.8.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Readme.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 
 </Project>

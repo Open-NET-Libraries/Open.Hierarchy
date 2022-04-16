@@ -1,12 +1,18 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Open.Hierarchy
+namespace Open.Hierarchy;
+
+/// <summary>
+/// Represents something that cotains a value (<see cref="IElement{T}.Value"/>).
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public interface IElement<T>
 {
-	public interface IElement<T>
-	{
+	/// <summary>
+	/// The value contained by the element.
+	/// </summary>
 #if NETSTANDARD2_1
-		[AllowNull]
+	[AllowNull]
 #endif
-		T Value { get; set; }
-	}
+	T Value { get; set; }
 }
