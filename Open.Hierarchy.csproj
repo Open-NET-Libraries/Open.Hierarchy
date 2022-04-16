@@ -38,6 +38,10 @@ Part of the "Open" set of libraries.</Description>
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+		<None Include="Readme.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

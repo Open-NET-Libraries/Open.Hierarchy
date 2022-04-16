@@ -129,7 +129,7 @@ public sealed partial class Node<T>
 		public Node<T> Map<TRoot>(IHaveRoot<TRoot> container)
 			where TRoot : T
 			=> container is null
-			? throw new ArgumentNullException(nameof(container))
-			: Map(container.Root);
+				? throw new ArgumentNullException(nameof(container))
+				: Map(container.Root);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Open.Hierarchy;
@@ -70,9 +71,9 @@ public static class TraversalExtensions
 	public static IEnumerable<object> GetDescendants(
 		this IParent root, TraversalMode traversal = TraversalMode.BreadthFirst)
 	{
-		if (root is null) throw new ArgumentNullException(nameof(root));
-
-		return GetDescendantsCore(root, traversal);
+		return root is null
+			? throw new ArgumentNullException(nameof(root))
+			: GetDescendantsCore(root, traversal);
 
 		static IEnumerable<object> GetDescendantsCore(IParent root, TraversalMode traversal)
 		{
@@ -98,7 +99,9 @@ public static class TraversalExtensions
 					foreach (var descendant in grandchildren
 						.OfType<IParent>()
 						.SelectMany(c => c.GetDescendants()))
+					{
 						yield return descendant;
+					}
 
 					break;
 
@@ -110,7 +113,9 @@ public static class TraversalExtensions
 						foreach (var descendant in root.Children
 							.OfType<IParent>()
 							.SelectMany(c => c.GetDescendants(TraversalMode.DepthFirst)))
+						{
 							yield return descendant;
+						}
 
 						yield return child;
 					}
