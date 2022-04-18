@@ -17,3 +17,9 @@ dotnet_analyzer_diagnostic.category-Style.severity = silent
 
 # Default severity for analyzer diagnostics with category 'Roslynator'
 dotnet_analyzer_diagnostic.category-Roslynator.severity = silent
+
+# HAA0502: Explicit new reference type allocation
+dotnet_diagnostic.HAA0502.severity = silent
+
+# HAA0401: Possible allocation of reference type enumerator
+dotnet_diagnostic.HAA0401.severity = silent

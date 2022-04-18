@@ -83,11 +83,11 @@ public sealed partial class Node<T>
 			return value;
 		}
 
-		static void PrepareForPool(Node<T> n)
+		static readonly Action<Node<T>> PrepareForPool = (Node<T> n) =>
 		{
 			n.Recycle();
 			n._recycled = true;
-		}
+		};
 
 		#endregion
 
