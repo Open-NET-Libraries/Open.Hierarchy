@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 namespace Open.Hierarchy;
 
 /// <summary>
-/// Represents a node in a hierachy. It can have chidren, a parent, and value.
+/// Represents a node in a hierarchy. It can have children, a parent, and value.
 /// </summary>
 public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 {
@@ -60,7 +60,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 	/// <summary>
 	/// Indicates that this node is in a state of deferred mapping.
 	/// Will be false if not created by calling Factory.Map or if the value has been mapped.
-	/// Since querying the chidren of this node will cause the value to be mapped, it can be useful to query this value before attempting traversal.
+	/// Since querying the children of this node will cause the value to be mapped, it can be useful to query this value before attempting traversal.
 	/// </summary>
 	public bool Unmapped { get; private set; }
 

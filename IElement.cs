@@ -3,7 +3,7 @@
 namespace Open.Hierarchy;
 
 /// <summary>
-/// Represents something that cotains a value (<see cref="IElement{T}.Value"/>).
+/// Represents something that contains a value (<see cref="IElement{T}.Value"/>).
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public interface IElement<T>

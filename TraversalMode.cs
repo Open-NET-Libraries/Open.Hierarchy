@@ -10,7 +10,7 @@ public enum TraversalMode
 	/// </summary>
 	DepthFirst,
 	/// <summary>
-	/// Will crawl the chidren first before crawling the grandchildren, and so-on.
+	/// Will crawl the children first before crawling the grandchildren, and so-on.
 	/// </summary>
 	BreadthFirst
 }

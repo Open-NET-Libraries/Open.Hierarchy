@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy;
@@ -8,13 +9,13 @@ public sealed partial class Node<T>
 {
 	/// <summary>
 	/// Clones this node by recreating the tree and copying the values.
-	/// The resultant clone does not belong to any tree (detatched) unless newParentForClone is specified.
+	/// The resultant clone does not belong to any tree (detached) unless <paramref name="newParentForClone"/> is specified.
 	/// </summary>
 	/// <param name="newParentForClone">
 	/// If a parent is specified it will use that node as its parent.
-	/// By default it ends up being detatched.
+	/// By default it ends up being detached.
 	/// </param>
-	/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
+	/// <param name="onNodeCloned">A function that receives the old node and its clone.</param>
 	/// <returns>The copy of the tree/branch.</returns>
 	public Node<T> Clone(
 		Node<T>? newParentForClone = null,
@@ -44,7 +45,7 @@ public sealed partial class Node<T>
 	/// Clones a node by recreating the tree and copying the values.
 	/// The resultant clone is detached (is its own root).
 	/// </summary>
-	/// <param name="onNodeCloned">A function that recieves the old node and its clone.</param>
+	/// <param name="onNodeCloned">A function that receives the old node and its clone.</param>
 	/// <returns>The copy of the tree/branch.</returns>
 	public Node<T> Clone(
 		Action<Node<T>, Node<T>> onNodeCloned)
@@ -54,14 +55,21 @@ public sealed partial class Node<T>
 	/// Create's a clone of the entire tree but only returns the clone of this node.
 	/// </summary>
 	/// <returns>A clone of this node as part of a newly cloned tree.</returns>
+	[SuppressMessage("Performance",
+		"HAA0302:Display class allocation to capture closure",
+		Justification = "Must be done this way.")]
+	[SuppressMessage("Performance",
+		"HAA0301:Closure Allocation Source",
+		Justification = "Must be done this way.")]
 	public Node<T> CloneTree()
 	{
 		Node<T>? node = null;
-		Root.Clone((original, clone) =>
+		_ = Root.Clone((original, clone) =>
 		{
 			if (original == this)
 				node = clone;
 		});
+
 		Debug.Assert(node != null);
 		return node!;
 	}

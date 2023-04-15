@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Open.Hierarchy;
@@ -38,6 +38,9 @@ public static class TraversalExtensions
 	/// <param name="root">The root node to begin traversal.</param>
 	/// <param name="traversal">The mode by which the tree is traversed.</param>
 	/// <returns>The enumeration of all the descendant nodes including this one.</returns>
+	[SuppressMessage("Performance",
+		"HAA0601:Value type to reference type conversion causing boxing allocation",
+		Justification = "Incorrect assumption as TRoot is TNode.")]
 	public static IEnumerable<TNode> GetNodesOfType<TNode, TRoot>(
 		this TRoot root, TraversalMode traversal = TraversalMode.BreadthFirst)
 		where TRoot : TNode, IParent<TNode>
@@ -88,8 +91,7 @@ public static class TraversalExtensions
 
 					var grandchildren = root.Children
 						.OfType<IParent>()
-						.SelectMany(c => c.Children)
-						.ToArray();
+						.SelectMany(c => c.Children); // A snapshot might be helpful here, but not sure if it's worth it.
 
 					// Step 2: return the children.
 					foreach (var grandchild in grandchildren)
@@ -107,7 +109,8 @@ public static class TraversalExtensions
 
 				case TraversalMode.DepthFirst:
 
-					// Simply walk the tree to the leaves recursively.  Starting with the leaves and ending with the child.
+					// Simply walk the tree to the leaves recursively.
+					// Starting with the leaves and ending with the child.
 					foreach (var child in root.Children)
 					{
 						foreach (var descendant in root.Children

@@ -7,7 +7,7 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>electricessence</Authors>
-		<Description>Interfaces and classes helful in managing tree-like data structures.
+		<Description>Interfaces and classes helpful in managing tree-like data structures.
 
 Part of the "Open" set of libraries.</Description>
 		<PackageTags>tree;node;hierarchy;parent;child;root</PackageTags>
@@ -15,7 +15,7 @@ Part of the "Open" set of libraries.</Description>
 		<PackageProjectUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>1.9.1</Version>
+		<Version>1.9.2</Version>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -27,7 +27,7 @@ Part of the "Open" set of libraries.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="All"  />
+		<PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
@@ -46,7 +46,7 @@ Part of the "Open" set of libraries.</Description>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.8.2" />
+		<PackageReference Include="Open.Disposable.ObjectPools" Version="2.9.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace Open.Hierarchy;
 
@@ -69,6 +68,7 @@ public static class ChildExtensions
 		where TNode : class, IChild<TNode>
 	{
 		if (node is null) throw new ArgumentNullException(nameof(node));
+
 		TNode? parent;
 		while ((parent = node.Parent) != null)
 		{

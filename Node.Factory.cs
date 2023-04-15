@@ -9,7 +9,7 @@ namespace Open.Hierarchy;
 public sealed partial class Node<T>
 {
 	/// <summary>
-	/// Used for mapping a tree of evaluations which do not have access to their parent nodes.
+	/// Used for mapping a unidirectional tree which do not have access to their parent nodes.
 	/// </summary>
 	public sealed class Factory : DisposableBase
 	{
@@ -17,6 +17,12 @@ public sealed partial class Node<T>
 		/// <summary>
 		/// Constructs a <see cref="Node{T}.Factory"/> for building a hierarchy.
 		/// </summary>
+		[SuppressMessage("Performance",
+			"HAA0302:Display class allocation to capture closure",
+			Justification = "Must be done this way.")]
+		[SuppressMessage("Performance",
+			"HAA0301:Closure Allocation Source",
+			Justification = "Must be done this way.")]
 		public Factory()
 		{
 			_pool = new(() => new(this), PrepareForPool, null, ushort.MaxValue);
