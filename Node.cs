@@ -55,7 +55,10 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 		}
 	}
 
-	private readonly Factory _factory;
+	/// <summary>
+	/// The factory that created and owns this node.
+	/// </summary>
+	public Factory Source { get; }
 
 	/// <summary>
 	/// Indicates that this node is in a state of deferred mapping.
@@ -77,7 +80,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 			{
 				foreach (var child in p.Children)
 				{
-					var childNode = _factory.Map(child);
+					var childNode = Source.Map(child);
 					childNode.Parent = this;
 					_children.Add(childNode);
 				}
@@ -91,7 +94,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 
 	Node(Factory factory)
 	{
-		_factory = factory ?? throw new ArgumentNullException(nameof(factory));
+		Source = factory ?? throw new ArgumentNullException(nameof(factory));
 		_children = new List<Node<T>>();
 		_childrenReadOnly = _children.AsReadOnly();
 		_value = default!;
@@ -236,7 +239,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 	public void AddValue(T value, bool asUnmapped = false)
 	{
 		AssertNotRecycled();
-		Add(_factory.GetNodeWithValue(value, asUnmapped));
+		Add(Source.GetNodeWithValue(value, asUnmapped));
 	}
 
 	/// <summary>
@@ -349,7 +352,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 		foreach (var c in _children)
 		{
 			c.Parent = null; // Don't initiate a 'Detach' (which does a lookup) since we are clearing here;
-			_factory.RecycleInternal(c);
+			Source.RecycleInternal(c);
 		}
 
 		_children.Clear();

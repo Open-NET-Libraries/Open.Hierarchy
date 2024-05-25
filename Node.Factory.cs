@@ -70,7 +70,7 @@ public sealed partial class Node<T>
 		public T Recycle(Node<T> node)
 		{
 			if (node is null) throw new ArgumentNullException(nameof(node));
-			if (node._factory != this)
+			if (node.Source != this)
 				throw new ArgumentException("The node being provided for recycling does not belong to this factory.", nameof(node));
 			Contract.EndContractBlock();
 

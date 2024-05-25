@@ -21,13 +21,13 @@ public sealed partial class Node<T>
 		Node<T>? newParentForClone = null,
 		Action<Node<T>, Node<T>>? onNodeCloned = null)
 	{
-		if (newParentForClone != null && newParentForClone._factory != _factory)
+		if (newParentForClone != null && newParentForClone.Source != Source)
 			throw new ArgumentException("The node being provided for cloning does not belong to this factory.", nameof(newParentForClone));
 		Contract.EndContractBlock();
 
 		AssertNotRecycled();
 
-		var clone = _factory.GetBlankNode();
+		var clone = Source.GetBlankNode();
 		clone.Value = Value;
 		newParentForClone?.Add(clone);
 
