@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>electricessence</Authors>
@@ -24,6 +25,7 @@ Part of the "Open" set of libraries.</Description>
 		<PackageIcon>logo.png</PackageIcon>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReadmeFile>Readme.md</PackageReadmeFile>
+		<NoWarn>CA1510</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

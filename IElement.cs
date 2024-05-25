@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Open.Hierarchy;
+﻿namespace Open.Hierarchy;
 
 /// <summary>
 /// Represents something that contains a value (<see cref="IElement{T}.Value"/>).

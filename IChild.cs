@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Open.Hierarchy;
+﻿namespace Open.Hierarchy;
 
 /// <summary>
 /// Represents something that has a parent (<see cref="IChild.Parent"/>).

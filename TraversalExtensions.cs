@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-
-namespace Open.Hierarchy;
+﻿namespace Open.Hierarchy;
 
 /// <summary>
 /// Extensions for traversing a hierarchy (tree).
 /// </summary>
 public static class TraversalExtensions
 {
-	private const string DescendantIsNotExpectedType = "Descendant is not of expected generic type and may create inconsistent results.  May need to use non-generic node.GetDescenants method.";
+	private const string DescendantIsNotExpectedType = "Descendant is not of expected generic type and may create inconsistent results. May need to use non-generic node.GetDescenants method.";
 
 	// NOTE: not recursive, but could produce a large stack while traversing, possibly could be better, but this is a unidirectional hierarchy so it's not so easy to avoid recursion.
 

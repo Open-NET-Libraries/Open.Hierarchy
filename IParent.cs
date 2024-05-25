@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Open.Hierarchy;
+﻿namespace Open.Hierarchy;
 
 /// <summary>
 /// Represents something that can have children (<see cref="IParent.Children"/>).

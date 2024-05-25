@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Open.Hierarchy;
+﻿namespace Open.Hierarchy;
 
 /// <summary>
 /// Represents a node in a hierarchy that can have children and may have parents.
