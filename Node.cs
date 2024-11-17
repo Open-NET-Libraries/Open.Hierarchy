@@ -11,15 +11,21 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 	public Node<T>? Parent { get; private set; }
 	object? IChild.Parent => Parent;
 
-	#region IParent<Node<T>> Implementation
-	private readonly List<Node<T>> _children;
+#if NET9_0_OR_GREATER
+	private readonly System.Threading.Lock _sync = new();
+#else
+    private readonly object _sync = new();
+#endif
+
+    #region IParent<Node<T>> Implementation
+    private readonly List<Node<T>> _children;
 	private readonly IReadOnlyList<Node<T>> _childrenReadOnly;
 
 	/// <inheritdoc />
 	public IReadOnlyList<Node<T>> Children => EnsureChildrenMapped();
 	/// <inheritdoc />
 	IReadOnlyList<object> IParent.Children => EnsureChildrenMapped();
-	#endregion
+    #endregion
 
 	private bool _recycled;
 
@@ -69,7 +75,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 			return _childrenReadOnly;
 
 		// Need to avoid double mapping and this method is primarily called when 'reading' from the node and contention will only occur if mapping is needed.
-		lock (_children)
+		lock (_sync)
 		{
 			if (!Unmapped) return _childrenReadOnly;
 			if (_value is IParent<T> p)
@@ -98,7 +104,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 
 	// WARNING: Care must be taken not to have duplicate nodes anywhere in the tree but having duplicate values are allowed.
 
-	#region IList<Node<T>> Implementation
+    #region IList<Node<T>> Implementation
 
 	/// <inheritdoc />
 	public int IndexOf(Node<T> child)
@@ -154,7 +160,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 		set => Replace(EnsureChildrenMapped()[index], value);
 	}
 
-	#region ICollection<Node<T>> Implementation
+    #region ICollection<Node<T>> Implementation
 	/// <inheritdoc />
 	public bool IsReadOnly => false;
 
@@ -224,8 +230,8 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 		EnsureChildrenMapped();
 		_children.CopyTo(array, arrayIndex);
 	}
-	#endregion
-	#endregion
+    #endregion
+    #endregion
 
 	/// <summary>
 	/// Gets a new node with the provided value and adds it as a child.
