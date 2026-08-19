@@ -104,15 +104,14 @@ public static class TraversalExtensions
 
 				case TraversalMode.DepthFirst:
 
-					// Simply walk the tree to the leaves recursively.
-					// Starting with the leaves and ending with the child.
+					// Simply walk the tree to the leaves recursively: each child's own
+					// descendants (post-order), then the child itself.
 					foreach (var child in root.Children)
 					{
-						foreach (var descendant in root.Children
-							.OfType<IParent>()
-							.SelectMany(c => c.GetDescendants(TraversalMode.DepthFirst)))
+						if (child is IParent p)
 						{
-							yield return descendant;
+							foreach (var descendant in p.GetDescendants(TraversalMode.DepthFirst))
+								yield return descendant;
 						}
 
 						yield return child;
