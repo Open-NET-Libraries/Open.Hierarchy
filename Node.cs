@@ -115,10 +115,26 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 
 	void AssertOkToJoinFamily(Node<T> child)
 	{
-		if (child.Parent is null) return;
-		if (child.Parent == this)
-			throw new InvalidOperationException("Provided node already belongs to this parent.");
-		throw new InvalidOperationException("Provided node belongs to another parent.");
+		if (child.Parent is not null)
+		{
+			if (child.Parent == this)
+				throw new InvalidOperationException("Provided node already belongs to this parent.");
+			throw new InvalidOperationException("Provided node belongs to another parent.");
+		}
+
+		AssertNotAncestor(child);
+	}
+
+	// A parentless node can still be an ancestor of this one (a tree's root always is);
+	// attaching it beneath itself would create a cycle that every traversal, clone and map
+	// would recurse on without end. O(depth) walk up from here.
+	void AssertNotAncestor(Node<T> candidate)
+	{
+		for (Node<T>? n = this; n is not null; n = n.Parent)
+		{
+			if (n == candidate)
+				throw new InvalidOperationException("Provided node is this node or one of its ancestors; attaching it would create a cycle.");
+		}
 	}
 
 	/// <inheritdoc />
@@ -257,6 +273,7 @@ public sealed partial class Node<T> : INode<Node<T>>, IElement<T>
 
 		if (replacement.Parent != null)
 			throw new InvalidOperationException("Replacement node belongs to another parent.");
+		AssertNotAncestor(replacement);
 		var i = _children.IndexOf(node);
 		if (i == -1)
 			throw new InvalidOperationException("Node being replaced does not belong to this parent.");

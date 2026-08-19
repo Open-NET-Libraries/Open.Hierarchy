@@ -16,7 +16,7 @@ Part of the "Open" set of libraries.</Description>
 		<PackageProjectUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Open-NET-Libraries/Open.Hierarchy/</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -27,6 +27,13 @@ Part of the "Open" set of libraries.</Description>
 		<PackageReadmeFile>Readme.md</PackageReadmeFile>
 		<NoWarn>CA1510</NoWarn>
 	</PropertyGroup>
+
+	<!-- The library project sits at the repo root: keep the tests sub-project out of its globbing. -->
+	<ItemGroup>
+		<Compile Remove="tests/**" />
+		<EmbeddedResource Remove="tests/**" />
+		<None Remove="tests/**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="All" />
