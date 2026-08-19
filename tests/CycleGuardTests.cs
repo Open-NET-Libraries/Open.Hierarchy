@@ -23,9 +23,9 @@ public class CycleGuardTests
 		using (factory)
 		{
 			// The root is parentless, so the old guard let it through -- and made a cycle.
-			Assert.ThrowsException<InvalidOperationException>(() => grandchild.Add(root));
-			Assert.ThrowsException<InvalidOperationException>(() => grandchild.Add(grandchild));
-			Assert.ThrowsException<InvalidOperationException>(() => grandchild.Insert(0, root));
+			Assert.ThrowsExactly<InvalidOperationException>(() => grandchild.Add(root));
+			Assert.ThrowsExactly<InvalidOperationException>(() => grandchild.Add(grandchild));
+			Assert.ThrowsExactly<InvalidOperationException>(() => grandchild.Insert(0, root));
 			Assert.AreEqual(0, grandchild.Count, "nothing was attached");
 		}
 	}
@@ -36,7 +36,7 @@ public class CycleGuardTests
 		var (factory, root, child, grandchild) = Chain();
 		using (factory)
 		{
-			Assert.ThrowsException<InvalidOperationException>(() => child.Replace(grandchild, root));
+			Assert.ThrowsExactly<InvalidOperationException>(() => child.Replace(grandchild, root));
 			Assert.AreSame(grandchild, child[0], "the original child is untouched");
 		}
 	}

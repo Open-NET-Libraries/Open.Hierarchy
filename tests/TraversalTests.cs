@@ -26,6 +26,10 @@ public class TraversalTests
 		return (factory, root);
 	}
 
+	private static readonly string[] Expected01 = ["a1", "a2", "a", "b1", "b"];
+	private static readonly string[] Expected02 = ["a", "b", "a1", "a2", "b1"];
+	private static readonly string[] Expected03 = ["a1", "a2", "a", "b1", "b", "root"];
+
 	[TestMethod]
 	public void DepthFirst_YieldsEachDescendantOnce_PostOrder()
 	{
@@ -34,7 +38,7 @@ public class TraversalTests
 		{
 			var values = root.GetDescendants(TraversalMode.DepthFirst).Cast<Node<string>>().Select(n => n.Value).ToArray();
 			// Post-order: a's children, then a; b's child, then b. Nothing repeated.
-			CollectionAssert.AreEqual(new[] { "a1", "a2", "a", "b1", "b" }, values);
+			CollectionAssert.AreEqual(Expected01, values);
 			Assert.AreEqual(values.Length, values.Distinct().Count(), "every descendant exactly once");
 		}
 	}
@@ -46,7 +50,7 @@ public class TraversalTests
 		using (factory)
 		{
 			var values = root.GetDescendants(TraversalMode.BreadthFirst).Cast<Node<string>>().Select(n => n.Value).ToArray();
-			CollectionAssert.AreEquivalent(new[] { "a", "b", "a1", "a2", "b1" }, values);
+			CollectionAssert.AreEquivalent(Expected02, values);
 			Assert.AreEqual(values.Length, values.Distinct().Count());
 		}
 	}
@@ -58,7 +62,7 @@ public class TraversalTests
 		using (factory)
 		{
 			var values = root.GetNodes(TraversalMode.DepthFirst).Cast<Node<string>>().Select(n => n.Value).ToArray();
-			CollectionAssert.AreEqual(new[] { "a1", "a2", "a", "b1", "b", "root" }, values);
+			CollectionAssert.AreEqual(Expected03, values);
 		}
 	}
 }
